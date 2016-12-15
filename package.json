@@ -1,0 +1,13 @@
+{
+  "name": "app",
+  "title": "My app",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "basisjs": "^1.10.0"
+  },
+  "devDependencies": {
+    "basisjs-tools": "^1.10.2",
+    "basisjs-tools-instrumenter": "^2.1.0"
+  }
+}

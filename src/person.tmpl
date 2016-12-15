@@ -1,0 +1,15 @@
+<b:style src="./person.css"/>
+<b:isolate/>
+
+<div class="tabs__item tabs__item--{active} person">
+  <button event-click="setActive">{name}</button>
+  <div class="person__info" b:show="{active}">
+    <h2>{name}</h2>
+    <ul>
+      <li>Age: {age}</li>
+      <li>Gender: {gender}</li>
+      <li>Company: {company}</li>
+      <li>Email: <a href="mailto:{email}">{email}</a></li>
+    </ul>
+  </div>
+</div>

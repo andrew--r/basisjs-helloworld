@@ -1,0 +1,29 @@
+.person {
+  margin: 1rem;
+  font-size: 14px;
+}
+
+.person h2 {
+  margin: 0;
+  margin-bottom: .75rem;
+  font-size: 22px;
+}
+
+
+.person__info {
+  display: table;
+  margin: .5rem 0;
+  padding: 1rem 2rem 2rem 1.25rem;
+  font-family: sans-serif;
+  background: #f9f5e4;
+}
+
+.person__info ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.person__info li {
+  padding-bottom: .25rem;
+}
