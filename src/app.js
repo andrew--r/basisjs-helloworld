@@ -7,38 +7,38 @@ const Dataset = basisData.Dataset;
 const DataObject = basisData.Object;
 
 const persons = require('./persons.json');
-const activePersonId = new basis.Token(persons[0].id);
+const defaultActivePersonId = 1;
+const activePersonId = router.route('users/:user').param('user');
 
-const PersonEntity = entity.createType('Person', {
-  id: Number,
-  age: Number,
-  name: String,
-  gender: ['male', 'female'],
-  company: String,
-  email: String,
-  active: {
-    type: function(value) { return value; },
-    defValue: function (person) {
-      return activePersonId.as(function (id) {
-        return id === person.id;
-      });
-    }
-  },
+const PersonEntity = entity.createType({
+  name: 'Person',
+
+  fields: {
+    id: Number,
+    age: Number,
+    name: String,
+    gender: ['male', 'female'],
+    company: String,
+    email: String,
+    active: {
+      type: function(value) { return value; },
+      defValue: function (person) {
+        return activePersonId.as(function (id) {
+          if (id === null || id === undefined) {
+            return defaultActivePersonId === person.id;
+          }
+
+          return Number(id) === person.id;
+        });
+      },
+    },
+  }
 });
 
-router.start();
-
-router.add('users/:id', {
-  match: function (id) {
-    activePersonId.set(Number(id));
-  },
-});
-
-module.exports = require('basis.app').create({
-  title: 'Hello, World!',
-
-  init: function() {
-    return new Node({
+module.exports = require('basis.app')
+  .create({
+    title: 'Hello, World!',
+    element: new Node({
       dataSource: new Dataset({
         items: persons.map(PersonEntity),
       }),
@@ -60,6 +60,13 @@ module.exports = require('basis.app').create({
           }
         }
       },
-    });
-  }
-});
+    }),
+  })
+  .ready(function () {
+    router.start();
+    activePersonId.as(function (id) {
+      if (!id) {
+        router.navigate('user/' + defaultActivePersonId, true);
+      }
+    })
+  });
