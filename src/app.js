@@ -1,18 +1,22 @@
 const Node = require('basis.ui').Node;
 const router = require('basis.router');
-
 const entity = require('basis.entity');
 const basisData = require('basis.data');
-const Dataset = basisData.Dataset;
-const DataObject = basisData.Object;
-
 const persons = require('./persons.json');
-const defaultActivePersonId = 1;
-const activePersonId = router.route('users/:user').param('user');
+
+const Dataset = basisData.Dataset;
+const Value = basisData.Value;
+
+const DEFAULT_ACTIVE_PERSON_ID = 1;
+const activePersonId = Value
+  .from(router.route('users/:id').param('id'))
+  .as(function (id) {
+    console.log(id);
+    return (typeof id === 'string') ? Number(id) : id;
+  });
 
 const PersonEntity = entity.createType({
   name: 'Person',
-
   fields: {
     id: Number,
     age: Number,
@@ -20,19 +24,7 @@ const PersonEntity = entity.createType({
     gender: ['male', 'female'],
     company: String,
     email: String,
-    active: {
-      type: function(value) { return value; },
-      defValue: function (person) {
-        return activePersonId.as(function (id) {
-          if (id === null || id === undefined) {
-            return defaultActivePersonId === person.id;
-          }
-
-          return Number(id) === person.id;
-        });
-      },
-    },
-  }
+  },
 });
 
 module.exports = require('basis.app')
@@ -47,12 +39,14 @@ module.exports = require('basis.app')
         template: resource('./person.tmpl'),
         binding: {
           id: 'data:',
-          active: 'data:',
           name: 'data:',
           age: 'data:',
           gender: 'data:',
           company: 'data:',
           email: 'data:',
+          selected: activePersonId.compute(function(node, id) {
+            return node.data.id === id;
+          })
         },
         action: {
           setActive: function () {
@@ -63,10 +57,7 @@ module.exports = require('basis.app')
     }),
   })
   .ready(function () {
-    router.start();
-    activePersonId.as(function (id) {
-      if (!id) {
-        router.navigate('user/' + defaultActivePersonId, true);
-      }
-    })
+    if (!activePersonId.value) {
+        router.navigate('users/' + DEFAULT_ACTIVE_PERSON_ID);
+    }
   });

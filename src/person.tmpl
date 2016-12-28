@@ -1,9 +1,9 @@
 <b:style src="./person.css"/>
 <b:isolate/>
 
-<div class="tabs__item tabs__item--{active} person">
+<div class="person">
   <button event-click="setActive">{name}</button>
-  <div class="person__info" b:show="{active}">
+  <div class="person__info" b:show="{selected}">
     <h2>{name}</h2>
     <ul>
       <li>Age: {age}</li>
